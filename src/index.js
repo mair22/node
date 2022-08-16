@@ -6,9 +6,14 @@ const app = express();
 const port = 3000;
 const route = require("./routes");
 const db = require("./config/db");
+const methodOverride = require('method-override')
 
 //Connect DB
 db.connect();
+
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+
 
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -19,6 +24,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use(methodOverride('_method'))
 //XMLHttpRequest, fetch, axious,...
 
 // HTTP logger
@@ -29,6 +36,9 @@ app.engine(
   "hbs",
   handlebars.engine({
     extname: ".hbs",
+    helpers: {
+      sum: (a, b) => a + b,
+    }
   })
 );
 app.set("view engine", "hbs");
